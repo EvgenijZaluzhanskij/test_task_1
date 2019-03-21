@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jugin car repair shop</title>
+</head>
+<body>
+    <div align="center">
+        <h1>Welcome to Jugin car repair shop</h1>
+        <form action="/masters/" method="post">
+            {% csrf_token %}
+            <input type="submit" value="List masters">
+        </form>
+        <form action="/order/" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Oreder a repair">
+        </form>
+        <form action="/about/" method="post">
+            {% csrf_token %}
+            <input type="submit" value="About">
+        </form>
+    </div>
+</body>
+</html>
