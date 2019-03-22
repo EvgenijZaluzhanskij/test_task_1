@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 
-from car_repair_shop.models import Client
+from car_repair_shop.models import Client, Master
 
 
 class RegistrationForm(UserCreationForm):
@@ -25,3 +24,13 @@ class RegistrationForm(UserCreationForm):
         new_client.save()
 
         return user
+
+
+class OrderForm(forms.Form):
+    client_name = forms.CharField(required=True)
+    client_lastname = forms.CharField(required=True)
+    client_patronymic = forms.CharField(required=True)
+    client_phone = forms.CharField(required=True)
+    plan_date = forms.DateTimeField()
+    master = forms.ModelChoiceField(Master.objects.all())
+    client_car = forms.CharField(required=True)

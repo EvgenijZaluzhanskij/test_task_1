@@ -17,7 +17,7 @@ from django.conf.urls import url, include
 from django.urls import path
 from django.contrib import admin
 
-from car_repair_shop.views import start_page, list_masters, Register
+from car_repair_shop.views import start_page, list_masters, Register, order
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^masters/$', list_masters),
     path(r'', include('django.contrib.auth.urls')),
     url(r'^register/$', Register.as_view()),
+    url(r'^order/$', order)
 ]
