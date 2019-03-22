@@ -25,7 +25,10 @@ SECRET_KEY = '+hl7%9!1vbuf@y9l79s!i!$kucf1hw!$l-l2o84jmk=0@02a-5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [] # ['localhost', '127.0.0.1', '[::1]']
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 
 # Application definition
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'car_repair_shop'
 ]
 
 MIDDLEWARE = [

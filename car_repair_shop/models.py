@@ -7,10 +7,13 @@ class Client(models.Model):
     """
     name = models.CharField(max_length=50, null=False, default='')
     last_name = models.CharField(max_length=50, null=False, default='')
+    patronymic = models.CharField(max_length=50, null=False, default='')
+    email = models.CharField(max_length=50, null=False, default='')
     phone_number = models.CharField(max_length=15, null=False, default='')
+    user_id = models.IntegerField(unique=True, default=0)
 
     def __str__(self):
-        return self.name + ' ' + self.last_name
+        return self.name + ' ' + self.last_name + ' ' + self.patronymic
 
 
 class Master(models.Model):
@@ -43,6 +46,8 @@ class Order(models.Model):
         Master,
         on_delete=models.DO_NOTHING
     )
+    car_model = models.CharField(max_length=50, null=False, default='')
+    task_type = models.CharField(max_length=50, null=False, default='')
     order_plan_time = models.DateTimeField()
     order_take_time = models.DateTimeField(auto_now_add=True)
     order_status = models.TextField(
