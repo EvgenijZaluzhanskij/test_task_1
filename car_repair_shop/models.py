@@ -1,5 +1,7 @@
 from django.db import models
 
+from car_repair_shop.validators import time_validator
+
 
 class Client(models.Model):
     """
@@ -10,7 +12,7 @@ class Client(models.Model):
     patronymic = models.CharField(max_length=50, null=False, default='')
     email = models.CharField(max_length=50, null=False, default='')
     phone_number = models.CharField(max_length=15, null=False, default='')
-    user_id = models.IntegerField(unique=True, default=0)
+    user_id = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name + ' ' + self.last_name + ' ' + self.patronymic
@@ -48,12 +50,27 @@ class Order(models.Model):
     )
     car_model = models.CharField(max_length=50, null=False, default='')
     task_type = models.CharField(max_length=50, null=False, default='')
-    order_plan_time = models.DateTimeField()
-    order_take_time = models.DateTimeField(auto_now_add=True)
     order_status = models.TextField(
         null=False,
-        choices=order_status_choices
+        choices=order_status_choices,
+        default='0'
     )
+    order_plan_date = models.DateField()
+    order_plan_time = models.TimeField(validators=[time_validator])
+    order_plan_end_time = models.TimeField()
+    order_take_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.client_id.name + ' ' + self.client_id.last_name
+
+    def save(self):
+        check_masters = Order.objects.filter(order_plan_time__lte=self.order_plan_time,
+                                             order_plan_end_time__gt=self.order_plan_time,
+                                             master_id_id=self.master_id,
+                                             order_plan_date=self.order_plan_date,
+                                             order_status='0')
+        if check_masters:
+            return False
+
+        super().save()
+        return True

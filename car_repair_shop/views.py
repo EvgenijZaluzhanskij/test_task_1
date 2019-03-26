@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import generic
 
-from car_repair_shop.models import Master, Client
+from car_repair_shop.models import Master, Client, Order
 from car_repair_shop.forms import RegistrationForm, OrderForm
 
 
@@ -24,15 +24,56 @@ def list_masters(request):
 def order(request):
     form_initial = {}
     if request.user.is_authenticated:
-        client = Client.objects.get(user_id=request.user.id)
-        form_initial = {'client_name': client.name,
-                        'client_lastname': client.last_name,
-                        'client_patronymic': client.patronymic,
-                        'client_phone': client.phone_number
-                        }
+        try:
+            client = Client.objects.get(user_id=request.user.id)
+            form_initial = {'name': client.name,
+                            'lastname': client.last_name,
+                            'patronymic': client.patronymic,
+                            'phone': client.phone_number
+                            }
+        except:
+            pass
+    model = Order
     order_form = OrderForm(initial=form_initial)
-    return render(request, 'order.html', {'form': order_form})
+    return render(request, 'order.html', {'form': order_form, 'model': model})
 
 
 def make_order(request):
-    pass
+    if request.POST:
+        email = request.POST['email']
+        client = Client.objects.filter(email=email)
+        if not client:
+            client = Client(name=request.POST['name'],
+                            last_name=request.POST['lastname'],
+                            patronymic=request.POST['patronymic'],
+                            email=email,
+                            user_id=0
+                            )
+            client.save()
+        else:
+            client = client[0]
+
+        plan_time = ':'.join(part for part in [request.POST['plan_time_hours'], request.POST['plan_time_minutes']])
+
+        end_hours = str(int(request.POST['plan_time_hours']) + 1)
+        plan_time_end = ':'.join(part for part in [end_hours, request.POST['plan_time_minutes']])
+        plan_date = request.POST['order_plan_date']
+
+        order = Order(order_plan_time=plan_time,
+                      order_plan_end_time=plan_time_end,
+                      order_status='0',
+                      client_id=client,
+                      master_id_id=request.POST['master_id'],
+                      car_model=request.POST['car_model'],
+                      task_type=request.POST['task_type'] if 'task_type' in request.POST else '',
+                      order_plan_date=plan_date)
+        order_result = order.save()
+        if not order_result:
+            messages.error(request, 'Master is busy on this time. Please select another time or another master.')
+            order_form = OrderForm
+            model = Order
+            return render(request, 'order.html', {'form': order_form, 'model': model})
+        else:
+            messages.success(request, 'Order succsessfully created')
+            return render(request, 'index.html')
+

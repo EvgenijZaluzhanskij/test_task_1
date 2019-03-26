@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'test_task_haski.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'carrepairshopdb2',
+        'USER': 'cr_shop_admin2',
+        'PASSWORD': '1q2w3e4r5t',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -118,6 +122,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+TIME_INPUT_FORMATS = (
+    '%H:%M',
+)
+
+APPEND_SLASH = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

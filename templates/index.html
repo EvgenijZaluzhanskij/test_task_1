@@ -5,6 +5,15 @@
     <title>Jugin car repair shop</title>
 </head>
 <body>
+    {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
     <div align="center">
         <h1>Welcome to Jugin car repair shop</h1>
         <form action="/masters/" method="post">
@@ -13,14 +22,9 @@
         </form>
         <form action="/order/" method="post">
             {% csrf_token %}
-            <input type="submit" value="Oreder a repair">
-        </form>
-        <form action="/about/" method="post">
-            {% csrf_token %}
-            <input type="submit" value="About">
+            <input type="submit" value="Order a repair">
         </form>
     </div>
-
     <div align="center">
         {% if user.is_authenticated %}
             <h3>Hello {{ user.username }}</h3>
