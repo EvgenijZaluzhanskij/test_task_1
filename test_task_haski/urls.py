@@ -26,5 +26,5 @@ urlpatterns = [
     path(r'', include('django.contrib.auth.urls')),
     url(r'^register/$', Register.as_view()),
     url(r'^order/$', order),
-    url(r'^order/make_order$', make_order)
+    url(r'^order/make_order/$', make_order)
 ]

@@ -56,9 +56,6 @@ class OrderForm(forms.ModelForm):
     )
     plan_time_minutes = forms.TimeField(label='minutes', widget=forms.Select(choices=CHOICES_MINUTES))
 
-    def save(self):
-        pass
-
     class Meta:
         model = Order
         fields = ('name', 'lastname', 'patronymic', 'email', 'task_type', 'order_plan_date',

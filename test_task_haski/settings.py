@@ -114,17 +114,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
-TIME_INPUT_FORMATS = (
-    '%H:%M',
-)
 
 APPEND_SLASH = False
 

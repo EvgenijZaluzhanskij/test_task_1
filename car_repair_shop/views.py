@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -31,7 +33,7 @@ def order(request):
                             'patronymic': client.patronymic,
                             'phone': client.phone_number
                             }
-        except:
+        except Client.DoesNotExist:
             pass
     model = Order
     order_form = OrderForm(initial=form_initial)
@@ -39,19 +41,13 @@ def order(request):
 
 
 def make_order(request):
-    if request.POST:
+    if request.method == 'POST':
         email = request.POST['email']
-        client = Client.objects.filter(email=email)
-        if not client:
-            client = Client(name=request.POST['name'],
-                            last_name=request.POST['lastname'],
-                            patronymic=request.POST['patronymic'],
-                            email=email,
-                            user_id=0
-                            )
-            client.save()
-        else:
-            client = client[0]
+        client = Client.objects.get_or_create(email=email, defaults={'name': request.POST['name'],
+                                                                     'last_name': request.POST['lastname'],
+                                                                     'patronymic': request.POST['patronymic'],
+                                                                     'email': email,
+                                                                     'user_id': 0})[0]
 
         plan_time = ':'.join(part for part in [request.POST['plan_time_hours'], request.POST['plan_time_minutes']])
 
@@ -59,15 +55,14 @@ def make_order(request):
         plan_time_end = ':'.join(part for part in [end_hours, request.POST['plan_time_minutes']])
         plan_date = request.POST['order_plan_date']
 
-        order = Order(order_plan_time=plan_time,
-                      order_plan_end_time=plan_time_end,
-                      order_status='0',
-                      client_id=client,
-                      master_id_id=request.POST['master_id'],
-                      car_model=request.POST['car_model'],
-                      task_type=request.POST['task_type'] if 'task_type' in request.POST else '',
-                      order_plan_date=plan_date)
-        order_result = order.save()
+        order_result = Order(order_plan_time=plan_time,
+                             order_plan_end_time=plan_time_end,
+                             order_status='0',
+                             client_id=client,
+                             master_id_id=request.POST['master_id'],
+                             car_model=request.POST['car_model'],
+                             task_type=request.POST.get('task_type', ''),
+                             order_plan_date=plan_date).save()
         if not order_result:
             messages.error(request, 'Master is busy on this time. Please select another time or another master.')
             order_form = OrderForm

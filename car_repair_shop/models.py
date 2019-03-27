@@ -7,12 +7,12 @@ class Client(models.Model):
     """
     Client model
     """
-    name = models.CharField(max_length=50, null=False, default='')
-    last_name = models.CharField(max_length=50, null=False, default='')
-    patronymic = models.CharField(max_length=50, null=False, default='')
-    email = models.CharField(max_length=50, null=False, default='')
-    phone_number = models.CharField(max_length=15, null=False, default='')
-    user_id = models.IntegerField(default=0)
+    name = models.CharField(max_length=50, default='')
+    last_name = models.CharField(max_length=50, default='')
+    patronymic = models.CharField(max_length=50, default='')
+    email = models.CharField(max_length=50, default='')
+    phone_number = models.CharField(max_length=15, default='')
+    user_id = models.IntegerField()
 
     def __str__(self):
         return self.name + ' ' + self.last_name + ' ' + self.patronymic
@@ -48,8 +48,8 @@ class Order(models.Model):
         Master,
         on_delete=models.DO_NOTHING
     )
-    car_model = models.CharField(max_length=50, null=False, default='')
-    task_type = models.CharField(max_length=50, null=False, default='')
+    car_model = models.CharField(max_length=50, default='')
+    task_type = models.CharField(max_length=50, default='')
     order_status = models.TextField(
         null=False,
         choices=order_status_choices,
@@ -63,7 +63,7 @@ class Order(models.Model):
     def __str__(self):
         return self.client_id.name + ' ' + self.client_id.last_name
 
-    def save(self):
+    def save(self, *args, **kwargs):
         check_masters = Order.objects.filter(order_plan_time__lte=self.order_plan_time,
                                              order_plan_end_time__gt=self.order_plan_time,
                                              master_id_id=self.master_id,
@@ -72,5 +72,5 @@ class Order(models.Model):
         if check_masters:
             return False
 
-        super().save()
+        super().save(*args, **kwargs)
         return True
