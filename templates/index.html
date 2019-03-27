@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jugin car repair shop</title>
+</head>
+<body>
+    {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <div align="center">
+        <h1>Welcome to Jugin car repair shop</h1>
+        <form action="/masters/" method="post">
+            {% csrf_token %}
+            <input type="submit" value="List masters">
+        </form>
+        <form action="/order/" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Order a repair">
+        </form>
+    </div>
+    <div align="center">
+        {% if user.is_authenticated %}
+            <h3>Hello {{ user.username }}</h3>
+                <form action="/logout/" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Logout" style="text-align: center">
+                </form>
+            {% else %}
+            <h3>Login or register for the fastest ordering</h3>
+                <form action="/login/" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Login" style="text-align: center">
+                </form>
+                <form action="/register/" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Register" style="vertical-align: middle">
+                </form>
+        {% endif %}
+    </div>
+</body>
+</html>
